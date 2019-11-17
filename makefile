@@ -12,6 +12,13 @@ $(EXEC): $(SRC)
 	$(CC) -o $@ $^
 
 
+ast:
+	dot -Tpdf ast.dot -o ast.pdf
+
+compressor:
+	dot -Tpdf compressor.dot -o compressor.pdf
+
+
 .PHONY: clean test
 clean:
 	$(RM) $(DIR_SRC)/*.cmo $(DIR_SRC)/*.cmi

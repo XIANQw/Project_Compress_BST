@@ -73,16 +73,15 @@ let printArbre arbre =
     in dfs arbre;
     Printf.printf "\n";
 ;;
-let printList l =
-    Printf.printf "list : ";
+let print_list l =
+    Printf.printf "\"";
     let rec helper arr = 
         match arr with
-        | [] -> Printf.printf "#";
+        | [] -> Printf.printf "\"";
         | x::rest -> 
             Printf.printf "%d " x;
             helper rest;
     in helper l;
-    Printf.printf "\n";
 ;;
 
 (* Question 2.4 *)
@@ -92,19 +91,19 @@ let rec abr_mot (a: abr) =
     | Node(v, l, r)-> "(" ^ (abr_mot l) ^ ")" ^ (abr_mot r)
 ;;
 
-let isomorphe (a: abr) (b: abr) = 
+(* let isomorphe (a: abr) (b: abr) = 
     let am = abr_mot a in
     let bm = abr_mot b in
     Printf.printf "a: %s\n" am;
     Printf.printf "b: %s\n" bm;
     am == bm
-;;
+;; *)
 
 type pair = None | Nodep of string * ((int list) ref)
 let print_pair p = 
     match p with
     | None -> ();
-    | Nodep(s, v_list)-> Printf.printf "s: %s : " s; printList !v_list;
+    | Nodep(s, v_list)-> Printf.printf "s: %s : " s; print_list !v_list;
 ;;
 
 let rec print_pair_list p_List =
@@ -119,7 +118,6 @@ let modify_list list v =
     |[] -> list := [v]
     |a::rest -> list := v::a::rest
 ;;
-
 
 let rec ajoute_mot_value mot valeur list head =
     match !list with
@@ -162,7 +160,7 @@ let make_compressor (pair : pair)  =
 let rec print_list_list (l : (int list) list) =
     match l with
     | [] -> ()
-    | subl::rest -> printList subl; print_list_list rest;
+    | subl::rest -> print_list subl; print_list_list rest;
 ;;
 
 let rec print_compressor (pair : compressor) = 
@@ -170,7 +168,7 @@ let rec print_compressor (pair : compressor) =
     | None -> Printf.printf "*\n";
     | Noeud(left, v_list, right) -> 
         print_compressor !left; 
-        printList v_list; 
+        print_list v_list; 
         print_compressor !right;
 ;;
 
@@ -260,6 +258,75 @@ let rec search_compressor (com : compressor) (value : int) =
             else res
 ;;
 
+let displayAST (root : abr) =
+    print_string "digraph G {\n";
+    match root with
+    |Empty -> ()
+    |Node(v, l, r) ->
+        let queue = Queue.create () in
+        Queue.push root queue;
+        while not (Queue.is_empty queue) do
+            let now = Queue.pop queue in
+            match now with
+            |Empty -> ()
+            |Node(v, l, r) ->
+                match l with
+                |Empty -> ()
+                |Node(lv, ll, lr) -> 
+                    Printf.printf "%d;\n" lv ;
+                    Printf.printf "%d -> %d;\n" v lv;
+                    Queue.push l queue;
+                match r with
+                |Empty -> ()
+                |Node(rv, rl, rr) -> 
+                    Printf.printf "%d;\n" rv ;
+                    Printf.printf "%d -> %d;\n" v rv;
+                    Queue.push r queue;
+        done;
+        print_string "}";
+;;
+
+type transition = Edge of (compressor * compressor)
+let displayCompressor (root : compressor) = 
+    print_string "digraph G {\n";
+    let queue = Queue.create () in
+    Queue.push root queue;
+    let countEdge = Hashtbl.create 10 in    
+    match root with
+    |None -> ()
+    |Noeud(l, v_list, r) ->
+        print_list v_list; print_string ";\n";
+        while not (Queue.is_empty queue) do
+            let now = Queue.pop queue in
+            match now with
+            | None -> ()
+            | Noeud(l, v_list, r) ->
+                match !l with 
+                | None -> ();
+                | Noeud(ll, lv_list, lr) ->
+                    let edge = Edge (now, !l) in
+                    let cpt  = if (Hashtbl.mem countEdge edge == false) then 1 else Hashtbl.find countEdge edge in
+                    if cpt <= 2 then (
+                        Hashtbl.replace countEdge edge (cpt + 1) ;
+                        print_list lv_list; print_string ";\n";
+                        print_list v_list; print_string "->"; print_list lv_list; print_string ";\n";
+                        Queue.push !l queue; 
+                        );
+                match !r with
+                | None -> ();
+                | Noeud(rl, rv_list, rr) ->
+                    let edge = Edge(now, !r) in
+                    let cpt  = if (Hashtbl.mem countEdge edge == false) then 1 else Hashtbl.find countEdge edge in
+                    if cpt <= 2 then (
+                        Hashtbl.replace countEdge edge (cpt + 1) ;
+                        print_list rv_list; print_string ";\n";
+                        print_list v_list; print_string "->"; print_list rv_list; print_string ";\n";
+                        Queue.push !r queue;
+                    );
+    done;
+    print_string "}";
+;;
+
 
 (* ------- main ------- *)
 let () = 
@@ -271,4 +338,5 @@ let () =
     (* let lib = pairList_to_map !pair_list n in*)
     (* Hashtbl.iter (fun a b -> Printf.printf " |%d: " a; Printf.printf " %s " b) !value_to_mot *)
     let root = compress_ast a n in
-    Printf.printf "%b : " (search_compressor root 9);
+    (* displayCompressor root; *)
+    displayAST a;

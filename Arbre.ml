@@ -1,5 +1,3 @@
-
-
 type arbre_lex =  noeud list 
 and noeud = Lettre of char * bool * arbre_lex
 ;;
