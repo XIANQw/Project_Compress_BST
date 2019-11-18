@@ -43,11 +43,12 @@ let rec ajoute (arbre : abr) value =
     if value < v then Abr(v, ajoute left value, right)
     else Abr(v, left, ajoute right value)
 ;;
-
-let rec construct_ast arbre list = 
-    match list with
-    | [] -> arbre
-    | x::rest -> construct_ast (ajoute arbre x) rest
+let construct_ast list = 
+    let rec helper arbre list = 
+        match list with
+        | [] -> arbre
+        | x::rest -> helper (ajoute arbre x) rest
+    in helper Null_abr list;
 ;;
 
 let search arbre key =
@@ -326,17 +327,23 @@ let search (root : compressor_map) (value : int) =
 ;;
         
 
-let create compressor_list_ast (test_list : int list) = compress_ast (construct_ast Null_abr test_list) ;;
+let compressor_list_ast (test_list : int list) = compress_ast (construct_ast test_list) ;;
+
+let compressor_map_ast (test_list : int list) = compress_ast2 (construct_ast test_list) ;; 
 
 (* ------- main ------- *)
 let () = 
-    (* let a_list = gen_permutation 30 in *)
+    (* let test_list = gen_permutation 50 in *)
     (* let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in *)
     (* let a = construct_ast Empty a_list in      *)
-    
-    let file = "/home/xian/Projets/M1-S1/Project_ouv/Jeu_de_tests/donnee150.txt" in
+    Printf.printf "start : %f\n" (Gc.allocated_bytes ());
+    let file = "/home/xian/Projets/M1-S1/Project_ouv/Jeu_de_tests/donnee10000.txt" in
     let test_list = parse_integers file in
-    let a = construct_ast Null_abr test_list in
-    let root = compress_ast2 a in
-    (* displayCompressorMap root; *)
-    Printf.printf "%b" (search root 64);
+    (* let gc = Gc.stat () in *)
+    (* let root = compressor_list_ast test_list in *)
+    (* let root = compressor_map_ast test_list in  *)
+    let ast = construct_ast test_list in
+    Printf.printf "end: %f\n" (Gc.allocated_bytes ());
+    
+
+            

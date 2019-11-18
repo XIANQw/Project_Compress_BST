@@ -18,11 +18,23 @@ ${DIR_SRC}/abr.cmx: ${DIR_SRC}/abr.ml
 	cd src; $(CC) -c abr.ml
 
 
-ast:
+ast.dot: $(EXEC)
+	./build/abr > ast.dot
+
+ast: ast.dot
 	dot -Tpdf ast.dot -o ast.pdf
 
-compressor:
+compressor.dot: $(EXEC)
+	./build/abr > compressor.dot
+
+compressor: compressor.dot
 	dot -Tpdf compressor.dot -o compressor.pdf
+
+compressorMap.dot: $(EXEC)
+	./build/abr > compressorMap.dot
+
+compressorMap: compressorMap.dot 
+	dot -Tpdf compressorMap.dot -o compressorMap.pdf
 
 
 .PHONY: clean test
