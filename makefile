@@ -3,7 +3,7 @@ RM	= rm -f
 DIR_SRC = ./src
 DIR_BUILD=./build
 EXEC = $(DIR_BUILD)/abr
-SRC = $(wildcard ${DIR_SRC}/*.ml)
+SRC = $(wildcard ${DIR_SRC}/abr.ml)
 
 
 all : $(EXEC)

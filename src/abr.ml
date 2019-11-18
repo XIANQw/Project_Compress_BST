@@ -128,9 +128,9 @@ let rec ajoute_mot_value mot valeur list head =
         else ajoute_mot_value mot valeur (ref rest) head
 ;;
 
-let tree_traversal (abr : abr) (length : int) =
+let tree_traversal (abr : abr) =
     let list = ref [] in
-    let lib = ref (Hashtbl.create length) in
+    let lib = ref (Hashtbl.create 16) in
     let rec helper abr list lib =
     match abr with
     |Empty -> "";
@@ -145,11 +145,11 @@ let tree_traversal (abr : abr) (length : int) =
 
 type compressor = None | Noeud of (compressor ref) * (int list) * (compressor ref)
 
-let rec list_to_llist l = 
+(* let rec list_to_llist l = 
     match l with
     |[] -> []
     |a::rest -> [a]::list_to_llist rest
-;;
+;; *)
 
 let make_compressor (pair : pair)  =
     match pair with
@@ -172,8 +172,8 @@ let rec print_compressor (pair : compressor) =
         print_compressor !right;
 ;;
 
-let pairList_to_map (list : pair list) (length : int)=
-    let lib = ref (Hashtbl.create length) in
+let pairList_to_map (list : pair list) =
+    let lib = ref (Hashtbl.create 16) in
     let rec helper (list : pair list) lib = 
         match list with
         |[] -> ()
@@ -188,7 +188,7 @@ let pairList_to_map (list : pair list) (length : int)=
 let connect_node (abr : abr) 
 (lib : (string, compressor ref) Hashtbl.t ref ) 
 (value_mot : (int, string) Hashtbl.t ref) =
-    let rec bfs (abr : abr) 
+    let bfs (abr : abr) 
     (lib : (string, compressor ref) Hashtbl.t ref ) 
     (value_mot : (int, string) Hashtbl.t ref) = 
         match abr with
@@ -203,6 +203,7 @@ let connect_node (abr : abr)
                 | Node(v, l, r) ->
                 let mot_v = Hashtbl.find !value_mot v in
                 let father_noeud = Hashtbl.find !lib mot_v in
+                if (l != Empty) then(
                     match l with 
                     | Empty -> ();
                     | Node(vl, _, _) -> 
@@ -211,31 +212,32 @@ let connect_node (abr : abr)
                         match !father_noeud with
                         |None -> ();
                         |Noeud(fg, v_List_list, fd) -> fg:=!nodel;
-                        Queue.push l queue; 
-                    match r with
-                    | Empty -> ();
-                    | Node(vr, _, _) ->
-                        let mot_r = Hashtbl.find !value_mot vr in
-                        let noder = Hashtbl.find !lib mot_r in
-                        match !father_noeud with
-                        |None -> ();
-                        |Noeud(fg, v_List_list, fd) -> fd:=!noder;
-                        Queue.push r queue;
+                        Queue.push l queue;
+                ); 
+                match r with
+                | Empty -> ();
+                | Node(vr, _, _) ->
+                    let mot_r = Hashtbl.find !value_mot vr in
+                    let noder = Hashtbl.find !lib mot_r in
+                    match !father_noeud with
+                    |None -> ();
+                    |Noeud(fg, v_List_list, fd) -> fd:=!noder;
+                    Queue.push r queue;
             done
         in bfs abr lib value_mot;
 ;;
 
-let compress_ast (abr : abr) (length : int) =
+let compress_ast (abr : abr) =
     match abr with
         | Empty -> None
         | Node(v,_,_) -> 
-            let pair_list, value_mot = tree_traversal abr length in
-            let mot_noeud = pairList_to_map !pair_list length in
+            let pair_list, value_mot = tree_traversal abr  in
+            let mot_noeud = pairList_to_map !pair_list  in
             connect_node abr mot_noeud value_mot;
             let mot_root = Hashtbl.find !value_mot v in
-            (* Hashtbl.iter (fun a b -> Printf.printf " |%s: " a; print_compressor !b) !mot_noeud; *)
             !(Hashtbl.find !mot_noeud mot_root)
 ;;
+
 
 let rec search (list: int list) (value : int) = 
     match list with
@@ -270,12 +272,14 @@ let displayAST (root : abr) =
             match now with
             |Empty -> ()
             |Node(v, l, r) ->
-                match l with
-                |Empty -> ()
-                |Node(lv, ll, lr) -> 
-                    Printf.printf "%d;\n" lv ;
-                    Printf.printf "%d -> %d;\n" v lv;
-                    Queue.push l queue;
+                if (l != Empty) then(
+                    match l with
+                    |Empty -> ()
+                    |Node(lv, ll, lr) -> 
+                        Printf.printf "%d;\n" lv ;
+                        Printf.printf "%d -> %d;\n" v lv;
+                        Queue.push l queue;
+                );
                 match r with
                 |Empty -> ()
                 |Node(rv, rl, rr) -> 
@@ -301,6 +305,7 @@ let displayCompressor (root : compressor) =
             match now with
             | None -> ()
             | Noeud(l, v_list, r) ->
+            if (!l != None) then (
                 match !l with 
                 | None -> ();
                 | Noeud(ll, lv_list, lr) ->
@@ -311,32 +316,46 @@ let displayCompressor (root : compressor) =
                         print_list lv_list; print_string ";\n";
                         print_list v_list; print_string "->"; print_list lv_list; print_string ";\n";
                         Queue.push !l queue; 
-                        );
-                match !r with
-                | None -> ();
-                | Noeud(rl, rv_list, rr) ->
-                    let edge = Edge(now, !r) in
-                    let cpt  = if (Hashtbl.mem countEdge edge == false) then 1 else Hashtbl.find countEdge edge in
-                    if cpt <= 2 then (
-                        Hashtbl.replace countEdge edge (cpt + 1) ;
-                        print_list rv_list; print_string ";\n";
-                        print_list v_list; print_string "->"; print_list rv_list; print_string ";\n";
-                        Queue.push !r queue;
                     );
+            );
+            match !r with
+            | None -> ();
+            | Noeud(rl, rv_list, rr) ->
+                let edge = Edge(now, !r) in
+                let cpt  = if (Hashtbl.mem countEdge edge == false) then 1 else Hashtbl.find countEdge edge in
+                if cpt <= 2 then (
+                    Hashtbl.replace countEdge edge (cpt + 1) ;
+                    print_list rv_list; print_string ";\n";
+                    print_list v_list; print_string "->"; print_list rv_list; print_string ";\n";
+                    Queue.push !r queue;
+                );
     done;
     print_string "}";
+;;
+
+type compressor_map = Null | Noeudm of ((compressor_map ref) * (string, int)Hashtbl.t * (compressor_map ref))
+
+
+let parse_integers s =
+    let stream = (Scanf.Scanning.from_file s) in
+    let rec do_parse acc =
+      try
+        do_parse (Scanf.bscanf stream " %c " (fun x -> ());  
+                 Scanf.bscanf stream " %d " (fun x -> x :: acc)) (*只能识别int*)
+      with      
+      | End_of_file -> acc
+    in List.rev (do_parse [])
 ;;
 
 
 (* ------- main ------- *)
 let () = 
-    (* let a_list = gen_permutation 15 in *)
-    let a_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in
-    let n = List.length a_list in
-    let a = ajouteList Empty a_list in 
-    (* let pair_list, value_to_mot = tree_traversal a n in*)
-    (* let lib = pairList_to_map !pair_list n in*)
-    (* Hashtbl.iter (fun a b -> Printf.printf " |%d: " a; Printf.printf " %s " b) !value_to_mot *)
-    let root = compress_ast a n in
-    (* displayCompressor root; *)
-    displayAST a;
+    (* let a_list = gen_permutation 30 in *)
+    (* let a_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in *)
+    (* let a = ajouteList Empty a_list in      *)
+    
+    let file = "/home/xian/Projets/M1-S1/Project_ouv/Jeu_de_tests/donnee150.txt" in
+    let test_list = parse_integers file in
+    let a = ajouteList Empty test_list in
+    let root = compress_ast a in 
+    displayCompressor root
