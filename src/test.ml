@@ -12,3 +12,6 @@ let print_user key password =
   MyUsers.iter print_user m;;
 
 MyUsers.find "fred" m;; (*找键值*)
+
+module arbre = Map.Make(String);;
+let m 

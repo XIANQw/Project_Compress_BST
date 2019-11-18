@@ -227,6 +227,7 @@ let connect_node (abr : abr)
         in bfs abr lib value_mot;
 ;;
 
+(* Question 2.5 *)
 let compress_ast (abr : abr) =
     match abr with
         | Empty -> None
@@ -246,6 +247,7 @@ let rec search (list: int list) (value : int) =
         if x = value then true else search rest value 
 ;;
 
+(* Question 2.6 *)
 let rec search_compressor (com : compressor) (value : int) =
     match com with
     | None -> false
