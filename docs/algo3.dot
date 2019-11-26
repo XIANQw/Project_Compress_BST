@@ -1,0 +1,13 @@
+digraph G {
+    "noeud [4]"
+    "noeud [2;6]"
+    "noeud [4]" -> "noeud [2;6]"[label = "gauche"];
+    "noeud [8]"
+    "noeud [4]" -> "noeud [8]" [label = "droite"];
+    "noeud [1;3;5;7;9]"
+    "noeud [2;6]" -> "noeud [1;3;5;7;9]" [label = "gauche"];
+    "noeud [1;3;5;7;9]"
+    "noeud [2;6]" -> "noeud [1;3;5;7;9]" [label = "droite"];
+    "noeud [8]"-> "noeud [2;6]" [label = "gauche"];
+    "noeud [8]" -> "noeud [1;3;5;7;9]" [label = "droite"];
+}

@@ -1,0 +1,6 @@
+digraph G {
+    "((())())((())())(): noeud [a:4]"
+    "(())(): noeud [aa:2; aba:6]"
+    "((())())() : noeud [ab:8]"
+    "(): noeud [aaa:1; aab:3; abaa:5; abab:7; abb:9]"
+}

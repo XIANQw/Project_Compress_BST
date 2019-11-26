@@ -1,2 +1,15 @@
-start : 84960.000000
-end: 269784.000000
+digraph G {
+" a:4 ";
+" aa:2  aba:6 ";
+" a:4 "->" aa:2  aba:6 ";
+" ab:8 ";
+" a:4 "->" ab:8 ";
+" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+" aa:2  aba:6 "->" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+" aa:2  aba:6 "->" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+" aa:2  aba:6 ";
+" ab:8 "->" aa:2  aba:6 ";
+" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+" ab:8 "->" abab:7  aaa:1  aab:3  abaa:5  abb:9 ";
+}
