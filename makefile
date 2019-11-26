@@ -52,10 +52,9 @@ compressorMap: compressorMap.dot
 
 
 .PHONY: clean test
+
 clean:
 	$(RM) $(DIR_SRC)/*.cmo $(DIR_SRC)/*.cmi $(DIR_SRC)/*.cmx $(DIR_SRC)/*.o
 	$(RM) *.cmo *.cmi
 	$(RM) $(EXEC)
 
-test:
-	$(EXEC)
