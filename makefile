@@ -33,7 +33,7 @@ ${DIR_SRC}/main.cmx: ${DIR_SRC}/main.ml
 
 
 ast.dot: $(EXEC)
-	./build/abr > ast.dot
+	./build/main > ast.dot
 
 ast: ast.dot
 	dot -Tpdf ast.dot -o ast.pdf

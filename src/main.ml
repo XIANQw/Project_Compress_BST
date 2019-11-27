@@ -11,25 +11,18 @@ let space f list =
  Printf.printf "%f\n" (mino_-.mino);
 ;;
 
-(* let iter num =
+let iter num =
     Printf.printf "%s:\n" num;
     let file = "./Jeu_de_tests/donnee" ^ num ^ ".txt" in
     let test_list = parse_integers file in
     space construct_ast test_list;
     space compressor_list_ast test_list;
     space compressor_map_ast test_list;;
-;; *)
-(* 
+;;
+
 let () = 
     let test_list = gen_permutation 50 in
-    let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in
-    let docs = ["100";"150";"500";"750";"1000";"10000";"50000"] in
+    (* let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in *)
+    (* let docs = ["100";"150";"500";"750";"1000";"10000";"50000"] in
     List.iter (fun x -> iter x) docs;; *)
-
-let () =
-    let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in
-    let ast = construct_ast test_list in
-    let root = compress_ast_map ast in
-    (* Printf.printf "%b" (search root 3); *)
-    (* List.iter (fun x -> (Printf.printf "%d %b " x (search root x))) test_list; *)
-    displayCompressorMap root;
+    displayAST (construct_ast test_list)
