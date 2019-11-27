@@ -39,13 +39,13 @@ ast: ast.dot
 	dot -Tpdf ast.dot -o ast.pdf
 
 compressor.dot: $(EXEC)
-	./build/abr > compressor.dot
+	./build/main > compressor.dot
 
 compressor: compressor.dot
 	dot -Tpdf compressor.dot -o compressor.pdf
 
 compressorMap.dot: $(EXEC)
-	./build/abr > compressorMap.dot
+	./build/main > compressorMap.dot
 
 compressorMap: compressorMap.dot 
 	dot -Tpdf compressorMap.dot -o compressorMap.pdf
