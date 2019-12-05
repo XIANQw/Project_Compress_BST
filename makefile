@@ -30,7 +30,8 @@ ${DIR_SRC}/main.cmx: ${DIR_SRC}/main.ml
 	cd src; $(CC) -c main.ml
 
 
-
+init:
+	mkdir build
 
 ast.dot: $(EXEC)
 	./build/main > ast.dot

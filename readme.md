@@ -1,8 +1,19 @@
-# Projet  ouverture
+# Compress a binary search tree
+In this project i compress a binary search tree. I use pointer to replace the isomorphic structure. There are two versions, using linked list and hash map for stocking node's value.
 
+## Author
 - XIAN Qiwei
-- WANG Ruiwen
 
+## Compilation
 
-# URL of project
-https://www-apr.lip6.fr/~genitrini/doc_ens/Ouv_Projet.pdf
+- Compile target
+
+```
+  make all
+```
+
+-  Execuation
+
+```
+./build/main
+```

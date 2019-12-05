@@ -21,8 +21,9 @@ let iter num =
 ;;
 
 let () = 
-    let test_list = gen_permutation 50 in
-    (* let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in *)
+    (* let test_list = gen_permutation 50 in *)
+    let test_list = [4; 2; 1; 3; 8; 6; 5; 7; 9] in
     (* let docs = ["100";"150";"500";"750";"1000";"10000";"50000"] in
     List.iter (fun x -> iter x) docs;; *)
-    displayAST (construct_ast test_list)
+    displayCompressorMap (compressor_map_ast test_list)
+    (* Printf.printf "%d noeuds isomorphes" (count_node_isomorphe (construct_ast test_list)) *)

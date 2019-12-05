@@ -29,6 +29,18 @@ let search arbre key =
     in dfs arbre key;
 ;;
 
+let count_node_isomorphe ast = 
+    let set = Hashtbl.create 1 in
+    let rec helper ast set =
+    match ast with
+    |Null_abr -> ""
+    |Abr(v, l, r) -> 
+        let mot = "(" ^ helper l set ^ ")" ^ helper r set in
+        if (not (Hashtbl.mem set mot)) then Hashtbl.add set mot 0;
+        mot;
+    in (fun x -> ())(helper ast set); 
+    Hashtbl.length set;
+;;
 
 let print_arbre arbre =
     Printf.printf "abr : \n";
